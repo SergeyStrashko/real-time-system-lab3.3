@@ -186,8 +186,19 @@ class Simulator {
 
     int[][] mutate(int[][] childs) {
         Random rand = new Random();
+        
+        int[] childSurvivalRate = getChildSurviveRate(childs);
+        double childFitness = getChildFitness(childSurvivalRate);
 
-        int[] childIndexes = rand.ints((int)(childs.length/2), 0, (int)(childs.length)).toArray();
+        double comparePopulations = childFitness/this.fitness;
+
+        int mutationPartSize = childs.length - 1;
+
+        if (comparePopulations < 1) {
+            mutationPartSize = (int)Math.ceil(mutationPartSize * comparePopulations);
+        }
+
+        int[] childIndexes = rand.ints(mutationPartSize, 0, (int)(childs.length)).toArray();
         for (int index : childIndexes) {
             int[] elements = rand.ints((int)(childs[index].length/2), 0, (int)(childs[index].length)).toArray();
             for (int elementIndex : elements) {
